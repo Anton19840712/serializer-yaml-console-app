@@ -1,1 +1,1 @@
-# SerializerYamlConsoleApp
+# yaml-creation-sample
