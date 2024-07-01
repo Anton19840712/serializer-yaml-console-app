@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
-using serializer_yaml_console_app;
+using serializer_yaml_console_app.Logic;
+using serializer_yaml_console_app.Test;
 using Serilog;
 
 var builder = new ConfigurationBuilder();
@@ -18,14 +19,8 @@ Log.Logger = new LoggerConfiguration()
 Log.Logger.Information("Application starting");
 
 // Вывод для проверки:
-configuration.ConsoleOut();
+// configuration.ConsoleOut();
 
-Console.WriteLine();
-Console.WriteLine("Serialization test");
-Console.WriteLine();
+// Создание файлов:
+configuration.CreateYamlFiles();
 
-var serializer = new YamlDotNet.Serialization.Serializer();
-serializer.Serialize(Console.Out, new
-{
-	Hello = "world"
-});
