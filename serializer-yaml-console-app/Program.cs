@@ -1,21 +1,31 @@
 ﻿using Microsoft.Extensions.Configuration;
+using serializer_yaml_console_app;
 using Serilog;
 
 var builder = new ConfigurationBuilder();
-BuildConfig(builder);
+
+var configuration = new ConfigurationBuilder()
+			.SetBasePath(AppContext.BaseDirectory)
+			.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+			.Build();
 
 Log.Logger = new LoggerConfiguration()
-	.ReadFrom.Configuration(builder.Build())
+	.ReadFrom.Configuration(configuration)
 	.Enrich.FromLogContext()
 	.WriteTo.Console()
 	.CreateLogger();
 
 Log.Logger.Information("Application starting");
 
-void BuildConfig(IConfigurationBuilder builder)
+// Вывод для проверки:
+configuration.ConsoleOut();
+
+Console.WriteLine();
+Console.WriteLine("Serialization test");
+Console.WriteLine();
+
+var serializer = new YamlDotNet.Serialization.Serializer();
+serializer.Serialize(Console.Out, new
 {
-	builder.SetBasePath(Directory.GetCurrentDirectory())
-		.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-		.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-		.AddEnvironmentVariables();
-}
+	Hello = "world"
+});
