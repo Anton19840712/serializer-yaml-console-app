@@ -12,6 +12,7 @@ namespace serializer_yaml_console_app.Logic
             // Сериализация в YAML и запись в файлы
             var serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
+				.ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
                 .Build();
 
             var networkConfig = configuration.GetSection("NetworkConfig").Get<NetworkConfig>();
