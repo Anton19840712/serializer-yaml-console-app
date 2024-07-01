@@ -10,7 +10,7 @@
 
 	public class Ethernet
 	{
-		public bool Dhcp4 { get; set; }
+		public string Dhcp4 { get; set; }
 		public List<string> Addresses { get; set; }
 		public string Gateway4 { get; set; }
 		public Nameservers Nameservers { get; set; }

@@ -2,6 +2,9 @@
 using serializer_yaml_console_app.Models;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization.EventEmitters;
 
 namespace serializer_yaml_console_app.Logic
 {
@@ -9,12 +12,14 @@ namespace serializer_yaml_console_app.Logic
     {
         public static void CreateYamlFiles(this IConfigurationRoot configuration)
         {
-            // Сериализация в YAML и запись в файлы
-            var serializer = new SerializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-				.Build();
+			// Сериализация в YAML и запись в файлы
+			var serializer = new SerializerBuilder()
+				 .WithNamingConvention(CamelCaseNamingConvention.Instance)
+				 .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
+				 .WithEventEmitter(next => new FlowStyleIntegerSequences(next))
+				 .Build();
 
-            var networkConfig = configuration.GetSection("NetworkConfig").Get<NetworkConfig>();
+			var networkConfig = configuration.GetSection("NetworkConfig").Get<NetworkConfig>();
             var metaData = configuration.GetSection("MetaData").Get<MetaData>();
             var cloudConfig = configuration.GetSection("CloudConfig").Get<CloudConfig>();
 
@@ -34,4 +39,23 @@ namespace serializer_yaml_console_app.Logic
 			Console.WriteLine("YAML files have been created in the 'ci_data' directory.");
 		}
     }
+
+	class FlowStyleIntegerSequences : ChainedEventEmitter
+	{
+		public FlowStyleIntegerSequences(IEventEmitter nextEmitter)
+			: base(nextEmitter) { }
+
+		public override void Emit(SequenceStartEventInfo eventInfo, IEmitter emitter)
+		{
+			if (typeof(IEnumerable<string>).IsAssignableFrom(eventInfo.Source.Type))
+			{
+				eventInfo = new SequenceStartEventInfo(eventInfo.Source)
+				{
+					Style = SequenceStyle.Flow
+				};
+			}
+
+			nextEmitter.Emit(eventInfo, emitter);
+		}
+	}
 }
