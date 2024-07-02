@@ -5,6 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="DiscUtils.Core" Version="0.16.13" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />

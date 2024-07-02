@@ -24,14 +24,4 @@ namespace serializer_yaml_console_app.Models
 	{
 		public bool Expire { get; set; }
 	}
-
-	public class RuncmdElement
-	{
-		public string Runcmd { get; set; }
-	}
-
-	public class SshKey
-	{
-		public string Key { get; set; }
-	}
 }
