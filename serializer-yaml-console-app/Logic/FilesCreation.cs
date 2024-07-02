@@ -51,7 +51,7 @@ namespace serializer_yaml_console_app.Logic
 				var builder = new CDBuilder
 				{
 					UseJoliet = true,
-					VolumeIdentifier = "MY_ISO"
+					VolumeIdentifier = "CIDATA"
 				};
 
 				AddDirectory(builder, sourceDirectory, string.Empty);
