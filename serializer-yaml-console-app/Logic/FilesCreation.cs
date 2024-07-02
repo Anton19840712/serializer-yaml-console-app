@@ -27,18 +27,16 @@ namespace serializer_yaml_console_app.Logic
 			Directory.CreateDirectory(outputDirectory);
 
 			var networkConfigYaml = serializer.Serialize(networkConfig);
-			File.WriteAllText(Path.Combine(outputDirectory, "network-config.yaml"), networkConfigYaml);
+			File.WriteAllText(Path.Combine(outputDirectory, "network-config"), networkConfigYaml);
 
 			var metaDataYaml = serializer.Serialize(metaData);
-			File.WriteAllText(Path.Combine(outputDirectory, "meta-data.yaml"), metaDataYaml);
+			File.WriteAllText(Path.Combine(outputDirectory, "meta-data"), metaDataYaml);
 
 			var cloudConfigYaml = serializer.Serialize(cloudConfig);
-			File.WriteAllText(Path.Combine(outputDirectory, "user-data.yaml"), cloudConfigYaml);
-
-			Console.WriteLine("YAML files have been created in the 'ci_data' directory.");
+			File.WriteAllText(Path.Combine(outputDirectory, "user-data"), cloudConfigYaml);
 
 			// Создание ISO-образа
-			string isoFilePath = Path.Combine(AppContext.BaseDirectory, "output.iso");
+			string isoFilePath = Path.Combine(AppContext.BaseDirectory, "output5.iso");
 			CreateIsoImage(outputDirectory, isoFilePath);
 
 			Console.WriteLine($"ISO image has been created at {isoFilePath}.");
