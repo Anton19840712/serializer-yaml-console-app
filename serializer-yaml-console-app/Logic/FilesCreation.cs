@@ -17,6 +17,7 @@ namespace serializer_yaml_console_app.Logic
 				 .WithNamingConvention(CamelCaseNamingConvention.Instance)
 				 .WithEventEmitter(next => new FlowStyleIntegerSequences(next))
 				 .WithTypeConverter(new ChpasswdTypeConverter())
+				 .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
 				 .Build();
 
 			var networkConfig = configuration.GetSection("NetworkConfig").Get<NetworkConfig>();

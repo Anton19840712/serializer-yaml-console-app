@@ -2,8 +2,8 @@
 
 namespace serializer_yaml_console_app.Models
 {
-    public class MetaData
-    {
+	public class MetaData
+	{
 		public string Dsmode { get; set; }
 
 		[YamlMember(Alias = "instance-id", ApplyNamingConventions = false)]

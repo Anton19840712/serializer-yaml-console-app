@@ -38,11 +38,11 @@ namespace serializer_yaml_console_app.Test
                 Console.WriteLine($"SSH Authorized Keys: {string.Join(", ", user.SshAuthorizedKeys)}");
             }
 
-            Console.WriteLine("Run Commands:");
-            foreach (var cmd in cloudConfig.Runcmd)
-            {
-                Console.WriteLine(cmd);
-            }
+            //Console.WriteLine("Run Commands:");
+            //foreach (var cmd in cloudConfig.Runcmd)
+            //{
+            //    Console.WriteLine(cmd);
+            //}
         }
     }
 }
