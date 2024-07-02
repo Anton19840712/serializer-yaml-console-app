@@ -14,9 +14,9 @@ namespace serializer_yaml_console_app.Logic
 		{
 			// Сериализация в YAML и запись в файлы
 			var serializer = new SerializerBuilder()
-				 //.ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
 				 .WithNamingConvention(CamelCaseNamingConvention.Instance)
 				 .WithEventEmitter(next => new FlowStyleIntegerSequences(next))
+				 .WithTypeConverter(new ChpasswdTypeConverter())
 				 .Build();
 
 			var networkConfig = configuration.GetSection("NetworkConfig").Get<NetworkConfig>();
@@ -56,6 +56,28 @@ namespace serializer_yaml_console_app.Logic
 			}
 
 			nextEmitter.Emit(eventInfo, emitter);
+		}
+	}
+
+	public class ChpasswdTypeConverter : IYamlTypeConverter
+	{
+		public bool Accepts(Type type)
+		{
+			return type == typeof(Chpasswd);
+		}
+
+		public object ReadYaml(IParser parser, Type type)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void WriteYaml(IEmitter emitter, object value, Type type)
+		{
+			var chpasswd = (Chpasswd)value;
+			emitter.Emit(new YamlDotNet.Core.Events.MappingStart(null, null, false, YamlDotNet.Core.Events.MappingStyle.Flow));
+			emitter.Emit(new YamlDotNet.Core.Events.Scalar(null, "expire"));
+			emitter.Emit(new YamlDotNet.Core.Events.Scalar(null, chpasswd.Expire ? "True" : "False"));
+			emitter.Emit(new YamlDotNet.Core.Events.MappingEnd());
 		}
 	}
 }

@@ -22,6 +22,7 @@ namespace serializer_yaml_console_app.Models
 
 	public class Chpasswd
 	{
+		[YamlMember(Alias = "expire", ScalarStyle = YamlDotNet.Core.ScalarStyle.Plain)]
 		public bool Expire { get; set; }
 	}
 }
