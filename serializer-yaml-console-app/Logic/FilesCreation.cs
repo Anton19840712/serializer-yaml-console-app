@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DiscUtils.Iso9660;
+using Microsoft.Extensions.Configuration;
 using serializer_yaml_console_app.Models;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.EventEmitters;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace serializer_yaml_console_app.Logic
@@ -38,47 +36,45 @@ namespace serializer_yaml_console_app.Logic
 			File.WriteAllText(Path.Combine(outputDirectory, "user-data.yaml"), cloudConfigYaml);
 
 			Console.WriteLine("YAML files have been created in the 'ci_data' directory.");
+
+			// Создание ISO-образа
+			string isoFilePath = Path.Combine(AppContext.BaseDirectory, "output.iso");
+			CreateIsoImage(outputDirectory, isoFilePath);
+
+			Console.WriteLine($"ISO image has been created at {isoFilePath}.");
 		}
-	}
 
-	class FlowStyleIntegerSequences : ChainedEventEmitter
-	{
-		public FlowStyleIntegerSequences(IEventEmitter nextEmitter)
-			: base(nextEmitter) { }
-
-		public override void Emit(SequenceStartEventInfo eventInfo, IEmitter emitter)
+		private static void CreateIsoImage(string sourceDirectory, string isoFilePath)
 		{
-			if (typeof(IEnumerable<string>).IsAssignableFrom(eventInfo.Source.Type))
+			using (FileStream isoStream = File.Open(isoFilePath, FileMode.Create))
 			{
-				eventInfo = new SequenceStartEventInfo(eventInfo.Source)
+				var builder = new CDBuilder
 				{
-					Style = SequenceStyle.Flow
+					UseJoliet = true,
+					VolumeIdentifier = "MY_ISO"
 				};
+
+				AddDirectory(builder, sourceDirectory, string.Empty);
+
+				builder.Build(isoStream);
+			}
+		}
+
+		private static void AddDirectory(CDBuilder builder, string sourceDirectory, string targetDirectory)
+		{
+			foreach (var filePath in Directory.GetFiles(sourceDirectory))
+			{
+				string fileName = Path.GetFileName(filePath);
+				string targetPath = Path.Combine(targetDirectory, fileName);
+				builder.AddFile(targetPath, filePath);
 			}
 
-			nextEmitter.Emit(eventInfo, emitter);
-		}
-	}
-
-	public class ChpasswdTypeConverter : IYamlTypeConverter
-	{
-		public bool Accepts(Type type)
-		{
-			return type == typeof(Chpasswd);
-		}
-
-		public object ReadYaml(IParser parser, Type type)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void WriteYaml(IEmitter emitter, object value, Type type)
-		{
-			var chpasswd = (Chpasswd)value;
-			emitter.Emit(new YamlDotNet.Core.Events.MappingStart(null, null, false, YamlDotNet.Core.Events.MappingStyle.Flow));
-			emitter.Emit(new YamlDotNet.Core.Events.Scalar(null, "expire"));
-			emitter.Emit(new YamlDotNet.Core.Events.Scalar(null, chpasswd.Expire ? "True" : "False"));
-			emitter.Emit(new YamlDotNet.Core.Events.MappingEnd());
+			foreach (var directory in Directory.GetDirectories(sourceDirectory))
+			{
+				string directoryName = Path.GetFileName(directory);
+				string targetPath = Path.Combine(targetDirectory, directoryName);
+				AddDirectory(builder, directory, targetPath);
+			}
 		}
 	}
 }

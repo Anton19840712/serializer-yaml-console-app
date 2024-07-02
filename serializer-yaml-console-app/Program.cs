@@ -19,7 +19,7 @@ Log.Logger = new LoggerConfiguration()
 Log.Logger.Information("Application starting");
 
 // Вывод для проверки:
-// configuration.ConsoleOut();
+configuration.ConsoleOut();
 
 // Создание файлов:
 configuration.CreateYamlFiles();
